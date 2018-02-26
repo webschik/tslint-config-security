@@ -4,7 +4,7 @@ TSLint security rules
 Inspired by [eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security)
 
 ## Rules
-All rules start from the prefix `tsr-` (Typescript Security Rule) to prevent name collisions.
+All rules start from the prefix `tsr-` (TSLint Security Rule) to prevent name collisions.
 
 #### `tsr-detect-unsafe-regexp`
 

@@ -2,7 +2,7 @@
   "name": "tslint-config-security",
   "version": "1.0.0",
   "description": "TSLint security rules",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "scripts": {
     "test": "npm run lint && npm run build && ./node_modules/.bin/tslint --test test/rules/**/**/**",
     "build": "rm -rf dist && ./node_modules/.bin/tsc",

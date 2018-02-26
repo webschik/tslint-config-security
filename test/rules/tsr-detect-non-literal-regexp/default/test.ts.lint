@@ -1,0 +1,3 @@
+const pattern1 = new RegExp('ab+c', 'i');
+const pattern2 = new RegExp(data, 'i');
+                 ~~~~~~~~~~~~~~~~~~~~~    [Found non-literal argument to RegExp Constructor]

@@ -1,0 +1,3 @@
+eval('alert()');
+eval(a);
+~~~~~~~        [eval with argument of type Identifier]

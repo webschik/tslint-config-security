@@ -1,0 +1,6 @@
+{
+  "rulesDirectory": "../../../../dist/rules",
+  "rules": {
+    "tsr-disable-mustache-escape": true
+  }
+}

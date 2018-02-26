@@ -1,0 +1,10 @@
+.idea
+.git
+.gitignore
+.DS_Store
+node_modules
+src
+test
+tsconfig.json
+tslint.json
+package-lock.json

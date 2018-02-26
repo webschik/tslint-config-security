@@ -1,0 +1,13 @@
+if (password === 'mypass') {
+    ~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the left side of expression]
+    // ...
+}
+
+if (age === 5) {
+    // ...
+}
+
+if ('mypass' === password) {
+    ~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
+    // ...
+}

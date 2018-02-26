@@ -1,0 +1,9 @@
+buf.readUInt8(0);
+buf.readUInt8(0, false);
+buf.readUInt8(0, true);
+~~~~~~~~~~~~~        [Found Buffer.readUInt8 with noAssert flag set true]
+
+buf.writeUInt8(0x3, 0);
+buf.writeUInt8(0x3, 0, false);
+buf.writeUInt8(0x3, 0, true);
+~~~~~~~~~~~~~~       [Found Buffer.writeUInt8 with noAssert flag set true]

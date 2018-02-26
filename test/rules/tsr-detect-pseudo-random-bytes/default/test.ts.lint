@@ -1,0 +1,3 @@
+crypto.pseudoRandomBytes
+~~~~~~~~~~~~~~~~~~~~~~~~    [Found crypto.pseudoRandomBytes which does not produce cryptographically strong numbers]
+crypto.randomBytes

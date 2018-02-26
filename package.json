@@ -1,0 +1,39 @@
+{
+  "name": "tslint-config-security",
+  "version": "1.0.0",
+  "description": "TSLint security rules",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "npm run lint && npm run build && ./node_modules/.bin/tslint --test test/rules/**/**/**",
+    "build": "rm -rf dist && ./node_modules/.bin/tsc",
+    "lint": "./node_modules/.bin/tslint \"src/**/*.ts\"",
+    "lock": "npm shrinkwrap --no-optional"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webschik/tslint-config-security.git"
+  },
+  "keywords": [
+    "TSLint",
+    "security",
+    "rules",
+    "security",
+    "plugin",
+    "security"
+  ],
+  "author": "webschik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webschik/tslint-config-security/issues"
+  },
+  "homepage": "https://github.com/webschik/tslint-config-security#readme",
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "tslint-config-webschik": "^1.0.0",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "safe-regex": "^1.1.0",
+    "tslint": "^5.9.1"
+  }
+}

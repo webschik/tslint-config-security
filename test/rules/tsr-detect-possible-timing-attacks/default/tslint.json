@@ -1,0 +1,6 @@
+{
+  "rulesDirectory": "../../../../dist/rules",
+  "rules": {
+    "tsr-detect-possible-timing-attacks": true
+  }
+}

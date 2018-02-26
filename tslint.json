@@ -1,0 +1,6 @@
+{
+  "extends": "tslint-config-webschik",
+  "rules": {
+    "max-classes-per-file": [true, 2]
+  }
+}

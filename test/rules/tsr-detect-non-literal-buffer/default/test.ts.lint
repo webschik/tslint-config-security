@@ -1,0 +1,3 @@
+const buf = new Buffer('test');
+const buf2 = new Buffer(c);
+             ~~~~~~~~~~~~~  [Found new Buffer with non-literal argument]

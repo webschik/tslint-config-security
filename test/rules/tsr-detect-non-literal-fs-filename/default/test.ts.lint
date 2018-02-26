@@ -1,0 +1,11 @@
+const file1 = fs.open('test');
+const file2 = fs.open(test);
+              ~~~~~~~        [Found fs.open with non-literal argument as index 0]
+
+fs.symlink(path1, path2);
+~~~~~~~~~~                [Found fs.symlink with non-literal argument as index 0, 1]
+fs.symlink('path1', path2);
+~~~~~~~~~~                  [Found fs.symlink with non-literal argument as index 1]
+fs.symlink(path1, 'path2');
+~~~~~~~~~~                  [Found fs.symlink with non-literal argument as index 0]
+fs.symlink('path1', 'path2');

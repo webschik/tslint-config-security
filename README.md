@@ -14,7 +14,7 @@ Inspired by [eslint-plugin-security](https://github.com/nodesecurity/eslint-plug
 npm i --save-dev tslint-config-security
 ```
 
-* Update your TSLint config:
+* Update your tslint.json:
 
 ```json
 {

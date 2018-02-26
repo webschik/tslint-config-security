@@ -1,7 +1,27 @@
 # tslint-config-security
-TSLint security rules
+[![Build Status](https://secure.travis-ci.org/webschik/tslint-config-security.png?branch=master)](https://travis-ci.org/webschik/tslint-config-security)
+[![npm](https://img.shields.io/npm/dm/tslint-config-security.svg)](https://www.npmjs.com/package/tslint-config-security)
+[![npm](https://img.shields.io/npm/v/tslint-config-security.svg)](https://www.npmjs.com/package/tslint-config-security)
+[![npm](https://img.shields.io/npm/l/tslint-config-security.svg)](https://www.npmjs.com/package/tslint-config-security)
+
+> TSLint security rules
 
 Inspired by [eslint-plugin-security](https://github.com/nodesecurity/eslint-plugin-security)
+
+## How to use
+* Install package:
+```
+npm i --save-dev tslint-config-security
+```
+
+* Update your TSLint config:
+
+```json
+{
+  "extends": ["tslint-config-security"]
+}
+```
+
 
 ## Rules
 All rules start from the prefix `tsr-` (TSLint Security Rule) to prevent name collisions.

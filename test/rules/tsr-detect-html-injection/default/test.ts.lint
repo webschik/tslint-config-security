@@ -1,0 +1,6 @@
+document.write('Test content');
+document.write(content);
+~~~~~~~~~~~~~~~~~~~~~~~  [Found document.write with non-literal argument]
+el.innerHTML = 'Test content';
+el.innerHTML = data;
+~~~~~~~~~~~~~~~~~~~  [Found Element.innerHTML with non-literal value]

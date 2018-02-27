@@ -14,6 +14,7 @@ module.exports = {
         "tsr-detect-possible-timing-attacks": [true],
         "tsr-detect-pseudo-random-bytes": [true],
         "tsr-detect-unsafe-regexp": [true],
-        "tsr-disable-mustache-escape": [true]
+        "tsr-disable-mustache-escape": [true],
+        "tsr-detect-html-injection": [true]
     }
 };

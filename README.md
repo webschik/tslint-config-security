@@ -95,3 +95,9 @@ More information: https://snyk.io/blog/node-js-timing-attack-ccc-ctf/
 Detects if `pseudoRandomBytes()` is in use, which might not give you the randomness you need and expect.
 
 More information: http://stackoverflow.com/questions/18130254/randombytes-vs-pseudorandombytes
+
+#### `tsr-detect-html-injection rule`
+
+Detects HTML injections:
+- `document.write(variable)`
+- `Element.innerHTML = variable;`

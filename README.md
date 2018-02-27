@@ -96,7 +96,7 @@ Detects if `pseudoRandomBytes()` is in use, which might not give you the randomn
 
 More information: http://stackoverflow.com/questions/18130254/randombytes-vs-pseudorandombytes
 
-#### `tsr-detect-html-injection rule`
+#### `tsr-detect-html-injection`
 
 Detects HTML injections:
 - `document.write(variable)`

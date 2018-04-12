@@ -13,7 +13,7 @@ class RuleWalker extends Lint.RuleWalker {
         const name: ts.Identifier = node.name;
         const methodName: string = name && name.text;
         const parent: ts.CallExpression = node.parent as ts.CallExpression;
-        const fsArgsInfo: number[] = methodName && fsModuleMethodsArgumentsInfo[methodName];
+        const fsArgsInfo: number[]|void = fsModuleMethodsArgumentsInfo.get(methodName);
         const methodArguments: ts.NodeArray<ts.Expression> = parent && parent.arguments;
 
         if (fsArgsInfo && methodArguments) {

@@ -9,3 +9,4 @@ fs.symlink('path1', path2);
 fs.symlink(path1, 'path2');
 ~~~~~~~~~~                  [Found fs.symlink with non-literal argument as index 0]
 fs.symlink('path1', 'path2');
+fs.toString();

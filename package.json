@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "safe-regex": "^1.1.0",
+    "tslib": "^1.9.2",
     "tslint": "^5.10.0",
     "typescript": "^2.9.1"
   }

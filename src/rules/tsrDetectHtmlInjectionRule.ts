@@ -37,6 +37,8 @@ class RuleWalker extends Lint.RuleWalker {
             node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
             left &&
             left.kind === ts.SyntaxKind.PropertyAccessExpression &&
+            left.name &&
+            left.name.text === 'innerHTML' &&
             right &&
             right.kind !== ts.SyntaxKind.StringLiteral
         ) {

@@ -72,6 +72,29 @@ Detects variable in filename argument of `fs` calls, which might allow an attack
 
 More information: https://www.owasp.org/index.php/Path_Traversal
 
+**Known limitations**
+
+Due to the known issues in the typed TSLint rules
+
+* https://github.com/Microsoft/vscode-tslint/issues/70
+* https://github.com/Microsoft/vscode-tslint/blob/master/tslint/README.md#how-can-i-use-tslint-rules-that-require-type-information
+* https://github.com/Microsoft/vscode-tslint/issues/70
+
+ `tslint-config-security` module will analyze methods only on **fs** variable or on **'fs' module**. E.g.:
+
+```
+const fs = require('fs');
+
+fs.open(somePath); // triggers the error
+require('fs').symlink(path1, path2); // triggers the error
+require("fs").symlink(path1, path2); // triggers the error
+
+const myFs = require('fs');
+
+myFs.open(somePath); // no error
+```
+
+
 #### `tsr-detect-non-literal-regexp`
 
 Detects `RegExp(variable)`, which might allow an attacker to DOS your server with a long-running regular expression.

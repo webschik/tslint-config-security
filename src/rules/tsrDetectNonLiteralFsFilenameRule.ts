@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 import fsModuleMethodsArgumentsInfo from '../fs-module-methods-arguments-info';
 
 export class Rule extends Lint.Rules.AbstractRule {
@@ -8,26 +8,33 @@ export class Rule extends Lint.Rules.AbstractRule {
     }
 }
 
+const expressionsToCheck: string[] = ['fs', `require('fs')`, `require("fs")`];
+
 class RuleWalker extends Lint.RuleWalker {
     visitPropertyAccessExpression (node: ts.PropertyAccessExpression) {
-        const name: ts.Identifier = node.name;
-        const methodName: string = name && name.text;
-        const parent: ts.CallExpression = node.parent as ts.CallExpression;
-        const fsArgsInfo: number[]|void = fsModuleMethodsArgumentsInfo.get(methodName);
-        const methodArguments: ts.NodeArray<ts.Expression> = parent && parent.arguments;
+        const {name, expression} = node;
 
-        if (fsArgsInfo && methodArguments) {
-            const invalidArgumentIndices: number[] = fsArgsInfo.filter((index: number) => {
-                const arg: ts.Expression = methodArguments[index];
+        if (name && node.parent && expression) {
+            const methodName: string = name.getText();
+            const parent: ts.CallExpression = node.parent as ts.CallExpression;
+            const fsArgsInfo: number[]|void = fsModuleMethodsArgumentsInfo.get(methodName);
+            const methodArguments: ts.NodeArray<ts.Expression> = parent.arguments;
 
-                return Boolean(arg && arg.kind !== ts.SyntaxKind.StringLiteral);
-            });
+            if (fsArgsInfo && methodArguments && expressionsToCheck.includes(expression.getText())) {
+                const invalidArgumentIndices: number[] = fsArgsInfo.filter((index: number) => {
+                    const arg: ts.Expression = methodArguments[index];
 
-            if (invalidArgumentIndices[0] !== undefined) {
-                this.addFailureAtNode(
-                    node,
-                    `Found fs.${ methodName } with non-literal argument as index ${ invalidArgumentIndices.join(', ')}`
-                );
+                    return Boolean(arg && arg.kind !== ts.SyntaxKind.StringLiteral);
+                });
+
+                if (invalidArgumentIndices[0] !== undefined) {
+                    const errorIndex: string = invalidArgumentIndices.join(', ');
+
+                    this.addFailureAtNode(
+                        node,
+                        `Found fs.${ methodName } with non-literal argument at index ${ errorIndex }`
+                    );
+                }
             }
         }
 

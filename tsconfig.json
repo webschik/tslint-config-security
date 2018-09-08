@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2015"],
+    "lib": ["es2018"],
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -15,7 +15,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "pretty": true,
-    "removeComments": true
+    "removeComments": true,
   },
   "exclude": [
     "node_modules"

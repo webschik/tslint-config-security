@@ -3,7 +3,39 @@ if (password === 'mypass') {
     // ...
 }
 
+if (password.toString() === 'mypass') {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the left side of expression]
+    // ...
+}
+
+user.password === 'mypass';
+~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the left side of expression]
+
+if (user['password'] === 'mypass') {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the left side of expression]
+    // ...
+}
+
+if (password === getFromDatabase()) {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the left side of expression]
+    // ...
+}
+
 if (age === 5) {
+    // ...
+}
+
+if (password === 5) {
+    // ...
+}
+
+password.toString() === true;
+
+if (user.password === true) {
+    // ...
+}
+
+if (user['password'] === true) {
     // ...
 }
 
@@ -11,3 +43,22 @@ if ('mypass' === password) {
     ~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
     // ...
 }
+
+if ('mypass' === password.toString()) {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
+    // ...
+}
+
+'mypass' === user.password;
+~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
+
+if ('mypass' === user['password']) {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
+    // ...
+}
+
+if (getFromDatabase() === password) {
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Potential timing attack on the right side of expression]
+    // ...
+}
+

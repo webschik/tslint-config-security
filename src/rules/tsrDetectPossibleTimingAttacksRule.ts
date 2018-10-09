@@ -85,10 +85,11 @@ export class Rule extends Lint.Rules.AbstractRule {
 class RuleWalker extends Lint.RuleWalker {
     visitBinaryExpression (node: ts.BinaryExpression) {
         const operatorTokenKind = node.operatorToken.kind;
-        if (node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsToken ||
-            node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
-            node.operatorToken.kind === ts.SyntaxKind.ExclamationEqualsToken ||
-            node.operatorToken.kind === ts.SyntaxKind.ExclamationEqualsEqualsToken) {
+
+        if (operatorTokenKind === ts.SyntaxKind.EqualsEqualsToken ||
+            operatorTokenKind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
+            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsToken ||
+            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsEqualsToken) {
 
             if (isVulnerableType(node.left) && isVulnerableType(node.right)) {
                 if (containsKeyword(node.left)) {

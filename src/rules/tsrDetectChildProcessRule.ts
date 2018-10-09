@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
@@ -10,9 +10,9 @@ export class Rule extends Lint.Rules.AbstractRule {
 class RuleWalker extends Lint.RuleWalker {
     private names: string[] = [];
 
-    visitCallExpression (node: ts.CallExpression) {
+    visitCallExpression(node: ts.CallExpression) {
         const {expression} = node;
-        const firstArgument: ts.StringLiteral = node.arguments && node.arguments[0] as ts.StringLiteral;
+        const firstArgument: ts.StringLiteral = node.arguments && (node.arguments[0] as ts.StringLiteral);
 
         if (
             firstArgument &&
@@ -35,7 +35,7 @@ class RuleWalker extends Lint.RuleWalker {
         super.visitCallExpression(node);
     }
 
-    visitPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const {name, expression} = node;
 
         if (name && expression && name.getText() === 'exec' && this.names.indexOf(expression.getText()) >= 0) {

@@ -36,13 +36,13 @@ const writeMethods: string[] = [
 ];
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
 
 class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const {name} = node;
         const parent: ts.CallExpression = node.parent as ts.CallExpression;
 
@@ -62,7 +62,7 @@ class RuleWalker extends Lint.RuleWalker {
                 parent.arguments[argumentIndex] &&
                 parent.arguments[argumentIndex].kind === ts.SyntaxKind.TrueKeyword
             ) {
-                this.addFailureAtNode(node, `Found Buffer.${ methodName } with noAssert flag set true`);
+                this.addFailureAtNode(node, `Found Buffer.${methodName} with noAssert flag set true`);
             }
         }
 

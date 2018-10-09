@@ -47,16 +47,16 @@ function containsKeywordPropertyAccessExpression (node: ts.PropertyAccessExpress
     return containsKeyword(node.expression) || containsKeyword(node.name);
 }
 
-function isVulnerableType (node: ts.Expression): boolean {
+function isVulnerableType(node: ts.Expression): boolean {
     switch (node.kind) {
         case ts.SyntaxKind.CallExpression:
-            return isVulnCallExpression(node as ts.CallExpression);
+            return isVulnerableCallExpression(node as ts.CallExpression);
         case ts.SyntaxKind.ElementAccessExpression:
-            return isVulnElementAccessExpression(node as ts.ElementAccessExpression);
+            return isVulnerableElementAccessExpression(node as ts.ElementAccessExpression);
         case ts.SyntaxKind.Identifier:
             return true;
         case ts.SyntaxKind.PropertyAccessExpression:
-            return isVulnPropertyAccessExpression(node as ts.PropertyAccessExpression);
+            return isVulnerablePropertyAccessExpression(node as ts.PropertyAccessExpression);
         case ts.SyntaxKind.StringLiteral:
             return true;
         default:
@@ -64,15 +64,15 @@ function isVulnerableType (node: ts.Expression): boolean {
     }
 }
 
-function isVulnCallExpression (node: ts.CallExpression) {
+function isVulnerableCallExpression (node: ts.CallExpression) {
     return isVulnerableType(node.expression);
 }
 
-function isVulnElementAccessExpression (node: ts.ElementAccessExpression) {
+function isVulnerableElementAccessExpression (node: ts.ElementAccessExpression) {
     return isVulnerableType(node.expression) || isVulnerableType(node.argumentExpression);
 }
 
-function isVulnPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+function isVulnerablePropertyAccessExpression (node: ts.PropertyAccessExpression) {
     return isVulnerableType(node.expression) || isVulnerableType(node.name);
 }
 
@@ -84,6 +84,7 @@ export class Rule extends Lint.Rules.AbstractRule {
 
 class RuleWalker extends Lint.RuleWalker {
     visitBinaryExpression (node: ts.BinaryExpression) {
+        const operatorTokenKind = node.operatorToken.kind;
         if (node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsToken ||
             node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
             node.operatorToken.kind === ts.SyntaxKind.ExclamationEqualsToken ||

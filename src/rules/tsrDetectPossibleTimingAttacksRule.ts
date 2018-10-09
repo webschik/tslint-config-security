@@ -1,18 +1,12 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
 
-const keywordMask = new RegExp('^.*((' + [
-    'password',
-    'secret',
-    'api',
-    'apiKey',
-    'token',
-    'auth',
-    'pass',
-    'hash'
-].join(')|(') + ')).*$', 'im');
+const keywordMask = new RegExp(
+    '^.*((' + ['password', 'secret', 'api', 'apiKey', 'token', 'auth', 'pass', 'hash'].join(')|(') + ')).*$',
+    'im'
+);
 
-function containsKeyword (node: ts.Expression): boolean {
+function containsKeyword(node: ts.Expression): boolean {
     switch (node.kind) {
         case ts.SyntaxKind.CallExpression:
             return containsKeywordCallExpression(node as ts.CallExpression);
@@ -27,24 +21,24 @@ function containsKeyword (node: ts.Expression): boolean {
     }
 }
 
-function containsKeywordCallExpression (node: ts.CallExpression) {
+function containsKeywordCallExpression(node: ts.CallExpression) {
     return containsKeyword(node.expression);
 }
 
-function containsKeywordElementAccessExpression (node: ts.ElementAccessExpression) {
+function containsKeywordElementAccessExpression(node: ts.ElementAccessExpression) {
     if (node.argumentExpression.kind === ts.SyntaxKind.StringLiteral) {
-        const argumentExpression = (node.argumentExpression as ts.StringLiteral);
+        const argumentExpression = node.argumentExpression as ts.StringLiteral;
         return containsKeyword(node.expression) || Boolean(keywordMask.test(argumentExpression.text));
     } else {
         return containsKeyword(node.expression) || containsKeyword(node.argumentExpression);
     }
 }
 
-function containsKeywordIdentifier (node: ts.Identifier) {
+function containsKeywordIdentifier(node: ts.Identifier) {
     return Boolean(keywordMask.test(node.text));
 }
 
-function containsKeywordPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+function containsKeywordPropertyAccessExpression(node: ts.PropertyAccessExpression) {
     return containsKeyword(node.expression) || containsKeyword(node.name);
 }
 
@@ -65,15 +59,15 @@ function isVulnerableType(node: ts.Expression): boolean {
     }
 }
 
-function isVulnerableCallExpression (node: ts.CallExpression) {
+function isVulnerableCallExpression(node: ts.CallExpression) {
     return isVulnerableType(node.expression);
 }
 
-function isVulnerableElementAccessExpression (node: ts.ElementAccessExpression) {
+function isVulnerableElementAccessExpression(node: ts.ElementAccessExpression) {
     return isVulnerableType(node.expression) || isVulnerableType(node.argumentExpression);
 }
 
-function isVulnerablePropertyAccessExpression (node: ts.PropertyAccessExpression) {
+function isVulnerablePropertyAccessExpression(node: ts.PropertyAccessExpression) {
     return isVulnerableType(node.expression) || isVulnerableType(node.name);
 }
 
@@ -84,14 +78,15 @@ export class Rule extends Lint.Rules.AbstractRule {
 }
 
 class RuleWalker extends Lint.RuleWalker {
-    visitBinaryExpression (node: ts.BinaryExpression) {
+    visitBinaryExpression(node: ts.BinaryExpression) {
         const operatorTokenKind = node.operatorToken.kind;
 
-        if (operatorTokenKind === ts.SyntaxKind.EqualsEqualsToken ||
+        if (
+            operatorTokenKind === ts.SyntaxKind.EqualsEqualsToken ||
             operatorTokenKind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
             operatorTokenKind === ts.SyntaxKind.ExclamationEqualsToken ||
-            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsEqualsToken) {
-
+            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsEqualsToken
+        ) {
             if (isVulnerableType(node.left) && isVulnerableType(node.right)) {
                 if (containsKeyword(node.left)) {
                     this.addFailureAtNode(node, 'Potential timing attack on the left side of expression');

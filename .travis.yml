@@ -3,5 +3,6 @@ sudo: false
 node_js:
   - '10.3.0'
 script:
+  - npm run format
   - npm run lint
   - npm run test

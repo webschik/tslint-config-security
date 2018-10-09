@@ -7,6 +7,7 @@ const keywordMask = new RegExp('^.*((' + [
     'api',
     'apiKey',
     'token',
+    'auth',
     'pass',
     'hash'
 ].join(')|(') + ')).*$', 'im');

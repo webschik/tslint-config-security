@@ -3,7 +3,7 @@ import * as ts from 'typescript';
 import fsModuleMethodsArgumentsInfo from '../fs-module-methods-arguments-info';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
@@ -11,13 +11,13 @@ export class Rule extends Lint.Rules.AbstractRule {
 const expressionsToCheck: string[] = ['fs', `require('fs')`, `require("fs")`];
 
 class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const {name, expression} = node;
 
         if (name && node.parent && expression) {
             const methodName: string = name.getText();
             const parent: ts.CallExpression = node.parent as ts.CallExpression;
-            const fsArgsInfo: number[]|void = fsModuleMethodsArgumentsInfo.get(methodName);
+            const fsArgsInfo: number[] | void = fsModuleMethodsArgumentsInfo.get(methodName);
             const methodArguments: ts.NodeArray<ts.Expression> = parent.arguments;
 
             if (fsArgsInfo && methodArguments && expressionsToCheck.includes(expression.getText())) {
@@ -32,7 +32,7 @@ class RuleWalker extends Lint.RuleWalker {
 
                     this.addFailureAtNode(
                         node,
-                        `Found fs.${ methodName } with non-literal argument at index ${ errorIndex }`
+                        `Found fs.${methodName} with non-literal argument at index ${errorIndex}`
                     );
                 }
             }

@@ -5,7 +5,7 @@
   "main": "./index.js",
   "scripts": {
     "test": "tslint --test test/rules/**/**/**",
-    "pretest": "npm run lint && npm run build",
+    "pretest": "npm run build",
     "build": "rm -rf dist && tsc",
     "lint": "tslint \"src/**/*.ts\"",
     "lock": "npm shrinkwrap --no-optional"
@@ -30,6 +30,9 @@
   "homepage": "https://github.com/webschik/tslint-config-security#readme",
   "devDependencies": {
     "@types/node": "^10.3.0",
+    "husky": "^1.1.1",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.14.3",
     "tslint-config-webschik": "^1.0.0"
   },
   "dependencies": {

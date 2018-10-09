@@ -2,17 +2,17 @@ import * as ts from 'typescript';
 import * as Lint from 'tslint';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
 
 class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression (node: ts.PropertyAccessExpression) {
+    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const expression: ts.Identifier = node.expression as ts.Identifier;
         const name: ts.Identifier = node.name;
         const parent: ts.CallExpression = node.parent as ts.CallExpression;
-        const firstArgument: undefined|ts.Expression = parent && parent.arguments && parent.arguments[0];
+        const firstArgument: undefined | ts.Expression = parent && parent.arguments && parent.arguments[0];
 
         if (
             expression &&
@@ -28,7 +28,7 @@ class RuleWalker extends Lint.RuleWalker {
         super.visitPropertyAccessExpression(node);
     }
 
-    visitBinaryExpression (node: ts.BinaryExpression) {
+    visitBinaryExpression(node: ts.BinaryExpression) {
         const left: ts.PropertyAccessExpression = node.left as ts.PropertyAccessExpression;
         const right: ts.Expression = node.right;
 

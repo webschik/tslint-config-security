@@ -77,13 +77,12 @@ function isVulnPropertyAccessExpression (node: ts.PropertyAccessExpression) {
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
 
 class RuleWalker extends Lint.RuleWalker {
-
     visitBinaryExpression (node: ts.BinaryExpression) {
         if (node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsToken ||
             node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken ||

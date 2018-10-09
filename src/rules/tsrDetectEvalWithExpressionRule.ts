@@ -3,13 +3,13 @@ import * as Lint from 'tslint';
 import syntaxKindToName from '../syntax-kind-to-name';
 
 export class Rule extends Lint.Rules.AbstractRule {
-    apply (sourceFile: ts.SourceFile): Lint.RuleFailure[] {
+    apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
     }
 }
 
 class RuleWalker extends Lint.RuleWalker {
-    visitCallExpression (node: ts.CallExpression) {
+    visitCallExpression(node: ts.CallExpression) {
         const firstArgument: ts.Expression = node.arguments[0];
 
         if (
@@ -17,7 +17,7 @@ class RuleWalker extends Lint.RuleWalker {
             firstArgument &&
             firstArgument.kind !== ts.SyntaxKind.StringLiteral
         ) {
-            this.addFailureAtNode(node, `eval with argument of type ${ syntaxKindToName(firstArgument.kind) }`);
+            this.addFailureAtNode(node, `eval with argument of type ${syntaxKindToName(firstArgument.kind)}`);
         }
 
         super.visitCallExpression(node);

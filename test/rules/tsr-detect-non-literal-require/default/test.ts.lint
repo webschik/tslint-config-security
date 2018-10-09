@@ -1,3 +1,6 @@
 require('path');
+require(`path`);
+require(`${path}`);
+~~~~~~~~~~~~~~~~~~    [Found non-literal argument in require]
 require(path);
 ~~~~~~~~~~~~~    [Found non-literal argument in require]

@@ -16,7 +16,8 @@ class RuleWalker extends Lint.RuleWalker {
             expression &&
             expression.text === 'require' &&
             firstArgument &&
-            firstArgument.kind !== ts.SyntaxKind.StringLiteral
+            firstArgument.kind !== ts.SyntaxKind.StringLiteral &&
+            firstArgument.kind !== ts.SyntaxKind.NoSubstitutionTemplateLiteral
         ) {
             this.addFailureAtNode(node, 'Found non-literal argument in require');
         }

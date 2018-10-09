@@ -18,3 +18,10 @@ const o = {
   open(a: string) {},
 };
 o.open(s);
+
+const _ = require('lodash');
+require('lodash-exists');
+
+if (_.exists(memberId)) {
+  this.memberId = memberId;
+}

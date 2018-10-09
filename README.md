@@ -105,7 +105,9 @@ More information: https://blog.liftsecurity.io/2014/11/03/regular-expression-dos
 
 Detects `require(variable)`, which might allow an attacker to load and run arbitrary code, or access arbitrary files on disk.
 
-More information: http://www.bennadel.com/blog/2169-where-does-node-js-and-require-look-for-modules.htm
+More information:
+* http://www.bennadel.com/blog/2169-where-does-node-js-and-require-look-for-modules.htm
+* https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-dynamic-require.md
 
 #### `tsr-detect-possible-timing-attacks`
 

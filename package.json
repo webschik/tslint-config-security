@@ -1,6 +1,6 @@
 {
   "name": "tslint-config-security",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "TSLint security rules",
   "main": "./index.js",
   "scripts": {
@@ -20,9 +20,7 @@
     "typescript",
     "security",
     "rules",
-    "security",
-    "plugin",
-    "security"
+    "plugin"
   ],
   "author": "webschik",
   "license": "MIT",

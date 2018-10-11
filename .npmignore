@@ -1,10 +1,7 @@
-.idea
-.git
-.gitignore
-.DS_Store
-node_modules
-src
-test
-tsconfig.json
-tslint.json
-package-lock.json
+*
+!dist
+!/index.js
+!npm-shrinkwrap.json
+!package.json
+!README.md
+!LICENSE

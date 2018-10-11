@@ -1,8 +1,12 @@
 {
   "name": "tslint-config-security",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "TSLint security rules",
   "main": "./index.js",
+  "files": [
+    "/dist",
+    "/index.js"
+  ],
   "scripts": {
     "test": "tslint --test test/rules/**/**/**",
     "pretest": "npm run build",

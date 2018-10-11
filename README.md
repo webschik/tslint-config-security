@@ -11,7 +11,7 @@ Inspired by [eslint-plugin-security](https://github.com/nodesecurity/eslint-plug
 ## How to use
 * Install package:
 ```
-npm i --save-dev tslint-config-security
+npm i tslint-config-security --save-dev  --production
 ```
 
 * Update your tslint.json:

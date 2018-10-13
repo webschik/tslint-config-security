@@ -22,6 +22,17 @@ npm i tslint-config-security --save-dev  --production
 }
 ```
 
+By default `tslint-config-security` enables [all rules](#rules), but you may disable any of them (not recommended):
+
+```json
+{
+  "extends": ["tslint-config-security"],
+  "rules": {
+    "tsr-detect-html-injection": false,
+    "tsr-detect-unsafe-regexp": false
+  }
+```
+
 
 ## Rules
 All rules start from the prefix `tsr-` (TSLint Security Rule) to prevent name collisions.

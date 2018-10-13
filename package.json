@@ -1,6 +1,6 @@
 {
   "name": "tslint-config-security",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "TSLint security rules",
   "main": "./index.js",
   "files": [
@@ -42,7 +42,8 @@
     "typescript": "^3.0.1"
   },
   "peerDependencies": {
-    "tslint": "^5.8.0"
+    "tslint": "^5.8.0",
+    "tslib": "^1.9.2"
   },
   "dependencies": {
     "safe-regex": "^1.1.0"

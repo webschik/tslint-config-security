@@ -10,7 +10,7 @@ Inspired by [eslint-plugin-security](https://github.com/nodesecurity/eslint-plug
 
 ## How to use
 * Install package:
-```
+```shell
 npm i tslint-config-security --save-dev  --production
 ```
 
@@ -20,6 +20,17 @@ npm i tslint-config-security --save-dev  --production
 {
   "extends": ["tslint-config-security"]
 }
+```
+
+By default `tslint-config-security` enables [all rules](#rules), but you may disable any of them (not recommended):
+
+```json
+{
+  "extends": ["tslint-config-security"],
+  "rules": {
+    "tsr-detect-html-injection": false,
+    "tsr-detect-unsafe-regexp": false
+  }
 ```
 
 
@@ -82,7 +93,7 @@ Due to the known issues in the typed TSLint rules
 
  `tslint-config-security` module will analyze methods only on **fs** variable or on **'fs' module**. E.g.:
 
-```
+```js
 const fs = require('fs');
 
 fs.open(somePath); // triggers the error
@@ -126,3 +137,16 @@ More information: http://stackoverflow.com/questions/18130254/randombytes-vs-pse
 Detects HTML injections:
 - `document.write(variable)`
 - `Element.innerHTML = variable;`
+
+#### `tsr-detect-sql-literal-injection`
+
+Detects possible SQL injections in string literals:
+```js
+const userId = 1;
+const query1 = `SELECT * FROM users WHERE id = ${userId}`;
+const query2 = `SELECT * FROM users WHERE id = ` + userId;
+const query2 = 'SELECT * FROM users WHERE id =' + userId;
+
+const columns = 'id, name';
+Users.query(`SELECT ${columns} FROM users`);
+```

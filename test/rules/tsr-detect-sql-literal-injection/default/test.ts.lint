@@ -1,0 +1,22 @@
+const userId = 1;
+let query = `SELECT * FROM users WHERE id = ${userId}`;
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found possible SQL injection]
+query = `SELECT *FROM users WHERE id = ` + userId;
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found possible SQL injection]
+query = ' SELECT * FROM users WHERE id =' + userId;
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found possible SQL injection]
+
+db.query(query);
+
+const columns = 'id, name';
+Users.query( ` SELECT ${columns} FROM users` );
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found possible SQL injection]
+
+
+const query = sql`SELECT * FROM users WHERE id = ${userId}`;
+db.query(query);
+
+Users.query(`SELECT id, name FROM users`);
+
+const punctuation = '!';
+console.log(`Not SQL${punctuation}`);

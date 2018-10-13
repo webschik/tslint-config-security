@@ -19,6 +19,10 @@ export class User {
 document.write('Test content');
 document.write(content);
 ~~~~~~~~~~~~~~~~~~~~~~~  [Found document.write with non-literal argument]
+el.insertAdjacentHTML(content);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found Element.insertAdjacentHTML with non-literal argument]
 el.innerHTML = 'Test content';
 el.innerHTML = data;
 ~~~~~~~~~~~~~~~~~~~  [Found Element.innerHTML with non-literal value]
+el.outerHTML = data;
+~~~~~~~~~~~~~~~~~~~  [Found Element.outerHTML with non-literal value]

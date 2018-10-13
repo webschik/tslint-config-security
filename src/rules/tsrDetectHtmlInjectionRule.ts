@@ -7,6 +7,10 @@ export class Rule extends Lint.Rules.AbstractRule {
     }
 }
 
+const unsafeDocumentHtmlMethods: string[] = ['writeln', 'write'];
+const unsafeElementHtmlMethods: string[] = ['insertAdjacentHTML'];
+const unsafeElementHtmlProps: string[] = ['outerHTML', 'innerHTML'];
+
 class RuleWalker extends Lint.RuleWalker {
     visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const expression: ts.Identifier = node.expression as ts.Identifier;
@@ -14,15 +18,14 @@ class RuleWalker extends Lint.RuleWalker {
         const parent: ts.CallExpression = node.parent as ts.CallExpression;
         const firstArgument: undefined | ts.Expression = parent && parent.arguments && parent.arguments[0];
 
-        if (
-            expression &&
-            expression.text === 'document' &&
-            name &&
-            name.text === 'write' &&
-            firstArgument &&
-            firstArgument.kind !== ts.SyntaxKind.StringLiteral
-        ) {
-            this.addFailureAtNode(parent, 'Found document.write with non-literal argument');
+        if (expression && name && firstArgument && firstArgument.kind !== ts.SyntaxKind.StringLiteral) {
+            const method: string = name.text;
+
+            if (expression.text === 'document' && unsafeDocumentHtmlMethods.includes(method)) {
+                this.addFailureAtNode(parent, `Found document.${method} with non-literal argument`);
+            } else if (unsafeElementHtmlMethods.includes(method)) {
+                this.addFailureAtNode(parent, `Found Element.${method} with non-literal argument`);
+            }
         }
 
         super.visitPropertyAccessExpression(node);
@@ -35,14 +38,14 @@ class RuleWalker extends Lint.RuleWalker {
         if (
             node.operatorToken &&
             node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+            right &&
+            right.kind !== ts.SyntaxKind.StringLiteral &&
             left &&
             left.kind === ts.SyntaxKind.PropertyAccessExpression &&
             left.name &&
-            left.name.text === 'innerHTML' &&
-            right &&
-            right.kind !== ts.SyntaxKind.StringLiteral
+            unsafeElementHtmlProps.includes(left.name.text)
         ) {
-            this.addFailureAtNode(node, 'Found Element.innerHTML with non-literal value');
+            this.addFailureAtNode(node, `Found Element.${left.name.text} with non-literal value`);
         }
 
         super.visitBinaryExpression(node);

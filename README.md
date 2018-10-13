@@ -142,11 +142,22 @@ Detects HTML injections:
 
 Detects possible SQL injections in string literals:
 ```js
+// invalid
 const userId = 1;
 const query1 = `SELECT * FROM users WHERE id = ${userId}`;
 const query2 = `SELECT * FROM users WHERE id = ` + userId;
-const query2 = 'SELECT * FROM users WHERE id =' + userId;
+const query3 = 'SELECT * FROM users WHERE id =' + userId;
 
 const columns = 'id, name';
 Users.query(`SELECT ${columns} FROM users`);
+
+// valid
+const userId = 1;
+const query = sql`SELECT * FROM users WHERE id = ${userId}`;
+db.query(query);
+
+// See https://github.com/mysqljs/mysql
+db.query('SELECT * FROM `books` WHERE `author` = ?', ['David'], function (error, results, fields) {
+  //...
+});
 ```

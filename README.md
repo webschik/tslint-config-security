@@ -41,11 +41,15 @@ All rules start from the prefix `tsr-` (TSLint Security Rule) to prevent name co
 
 Locates potentially unsafe regular expressions, which may take a very long time to run, blocking the event loop.
 
+Examples: [test/rules/tsr-detect-unsafe-regexp/default/test.ts.lint](test/rules/tsr-detect-unsafe-regexp/default/test.ts.lint)
+
 More information: https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js
 
 #### `tsr-detect-non-literal-buffer`
 
 Detects variable in [`new Buffer`](https://nodejs.org/api/buffer.html) argument
+
+Examples: [test/rules/tsr-detect-non-literal-buffer/default/test.ts.lint](test/rules/tsr-detect-non-literal-buffer/default/test.ts.lint)
 
 #### `tsr-detect-buffer-noassert`
 
@@ -53,11 +57,15 @@ Detects calls to [`Buffer`](https://nodejs.org/api/buffer.html) with `noAssert` 
 
 From the Node.js API docs: "Setting `noAssert` to true skips validation of the `offset`. This allows the `offset` to be beyond the end of the `Buffer`."
 
+Examples: [test/rules/tsr-detect-buffer-noassert/default/test.ts.lint](test/rules/tsr-detect-buffer-noassert/default/test.ts.lint)
+
 #### `tsr-detect-child-process`
 
 Detects instances of [`child_process`](https://nodejs.org/api/child_process.html) & non-literal [`exec()`](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback)
 
 More information: https://blog.liftsecurity.io/2014/08/19/Avoid-Command-Injection-Node.js
+
+Examples: [test/rules/tsr-detect-child-process/default/test.ts.lint](test/rules/tsr-detect-child-process/default/test.ts.lint)
 
 #### `tsr-detect-disable-mustache-escape`
 
@@ -65,17 +73,23 @@ Detects `object.escapeMarkup = false`, which can be used with some template engi
 
 More information: https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)
 
+Examples: [test/rules/tsr-disable-mustache-escape/default/test.ts.lint](test/rules/tsr-disable-mustache-escape/default/test.ts.lint)
+
 #### `tsr-detect-eval-with-expression`
 
 Detects `eval(variable)` which can allow an attacker to run arbitary code inside your process.
 
 More information: http://security.stackexchange.com/questions/94017/what-are-the-security-issues-with-eval-in-javascript
 
+Examples: [test/rules/tsr-detect-eval-with-expression/default/test.ts.lint](test/rules/tsr-detect-eval-with-expression/default/test.ts.lint)
+
 #### `tsr-detect-no-csrf-before-method-override`
 
 Detects Express `csrf` middleware setup before `method-override` middleware. This can allow `GET` requests (which are not checked by `csrf`) to turn into `POST` requests later.
 
 More information: https://blog.liftsecurity.io/2013/09/07/bypass-connect-csrf-protection-by-abusing
+
+Examples: [test/rules/tsr-detect-no-csrf-before-method-override/default/test.ts.lint](test/rules/tsr-detect-no-csrf-before-method-override/default/test.ts.lint)
 
 #### `tsr-detect-non-literal-fs-filename`
 
@@ -105,12 +119,15 @@ const myFs = require('fs');
 myFs.open(somePath); // no error
 ```
 
+More examples: [test/rules/tsr-detect-non-literal-fs-filename/default/test.ts.lint](test/rules/tsr-detect-non-literal-fs-filename/default/test.ts.lint)
 
 #### `tsr-detect-non-literal-regexp`
 
 Detects `RegExp(variable)`, which might allow an attacker to DOS your server with a long-running regular expression.
 
 More information: https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js
+
+Examples: [test/rules/tsr-detect-non-literal-regexp/default/test.ts.lint](test/rules/tsr-detect-non-literal-regexp/default/test.ts.lint)
 
 #### `tsr-detect-non-literal-require`
 
@@ -120,11 +137,15 @@ More information:
 * http://www.bennadel.com/blog/2169-where-does-node-js-and-require-look-for-modules.htm
 * https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-dynamic-require.md
 
+Examples: [test/rules/tsr-detect-non-literal-require/default/test.ts.lint](test/rules/tsr-detect-non-literal-require/default/test.ts.lint)
+
 #### `tsr-detect-possible-timing-attacks`
 
 Detects insecure comparisons (`==`, `!=`, `!==` and `===`), which check input sequentially.
 
 More information: https://snyk.io/blog/node-js-timing-attack-ccc-ctf/
+
+Examples: [test/rules/tsr-detect-possible-timing-attacks/default/test.ts.lint](test/rules/tsr-detect-possible-timing-attacks/default/test.ts.lint)
 
 #### `tsr-detect-pseudo-random-bytes`
 
@@ -132,11 +153,18 @@ Detects if `pseudoRandomBytes()` is in use, which might not give you the randomn
 
 More information: http://stackoverflow.com/questions/18130254/randombytes-vs-pseudorandombytes
 
+Examples: [test/rules/tsr-detect-pseudo-random-bytes/default/test.ts.lint](test/rules/tsr-detect-pseudo-random-bytes/default/test.ts.lint)
+
 #### `tsr-detect-html-injection`
 
 Detects HTML injections:
 - `document.write(variable)`
+- `document.writeln(variable)`
 - `Element.innerHTML = variable;`
+- `Element.outerHTML = variable;`
+- `el.insertAdjacentHTML(variable);`
+
+More examples: [test/rules/tsr-detect-html-injection/default/test.ts.lint](test/rules/tsr-detect-html-injection/default/test.ts.lint)
 
 #### `tsr-detect-sql-literal-injection`
 
@@ -161,3 +189,5 @@ db.query('SELECT * FROM `books` WHERE `author` = ?', ['David'], function (error,
   //...
 });
 ```
+
+More examples: [test/rules/tsr-detect-sql-literal-injection/default/test.ts.lint](test/rules/tsr-detect-sql-literal-injection/default/test.ts.lint)

@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -16,8 +17,7 @@ class RuleWalker extends Lint.RuleWalker {
             expression &&
             expression.text === 'require' &&
             firstArgument &&
-            firstArgument.kind !== ts.SyntaxKind.StringLiteral &&
-            firstArgument.kind !== ts.SyntaxKind.NoSubstitutionTemplateLiteral
+            !stringLiteralKinds.includes(firstArgument.kind)
         ) {
             this.addFailureAtNode(node, 'Found non-literal argument in require');
         }

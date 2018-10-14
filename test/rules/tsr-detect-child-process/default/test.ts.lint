@@ -1,6 +1,8 @@
 child_process.exec('ls');
 require('child_process')
 ~~~~~~~~~~~~~~~~~~~~~~~~        [Found require("child_process")]
+require(`child_process`)
+~~~~~~~~~~~~~~~~~~~~~~~~        [Found require("child_process")]
 const child = require('child_process'); child.exec(com)
               ~~~~~~~~~~~~~~~~~~~~~~~~                    [Found require("child_process")]
                                         ~~~~~~~~~~        [Found child_process.exec() with non StringLiteral first argument]

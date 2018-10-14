@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -16,7 +17,7 @@ class RuleWalker extends Lint.RuleWalker {
             expression &&
             expression.text === 'RegExp' &&
             firstArgument &&
-            firstArgument.kind !== ts.SyntaxKind.StringLiteral
+            !stringLiteralKinds.includes(firstArgument.kind)
         ) {
             this.addFailureAtNode(node, 'Found non-literal argument to RegExp Constructor');
         }

@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {stringLiteralKinds} from '../node-kind';
 import syntaxKindToName from '../syntax-kind-to-name';
 
 export class Rule extends Lint.Rules.AbstractRule {
@@ -12,11 +13,7 @@ class RuleWalker extends Lint.RuleWalker {
     visitCallExpression(node: ts.CallExpression) {
         const firstArgument: ts.Expression = node.arguments[0];
 
-        if (
-            node.expression.getText() === 'eval' &&
-            firstArgument &&
-            firstArgument.kind !== ts.SyntaxKind.StringLiteral
-        ) {
+        if (node.expression.getText() === 'eval' && firstArgument && !stringLiteralKinds.includes(firstArgument.kind)) {
             this.addFailureAtNode(node, `eval with argument of type ${syntaxKindToName(firstArgument.kind)}`);
         }
 

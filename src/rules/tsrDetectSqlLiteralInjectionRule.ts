@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
 import {isSqlQuery} from '../is-sql-query';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -8,7 +9,6 @@ export class Rule extends Lint.Rules.AbstractRule {
     }
 }
 
-const stringLiteralKinds: number[] = [ts.SyntaxKind.NoSubstitutionTemplateLiteral, ts.SyntaxKind.StringLiteral];
 const generalErrorMessage: string = 'Found possible SQL injection';
 
 class RuleWalker extends Lint.RuleWalker {

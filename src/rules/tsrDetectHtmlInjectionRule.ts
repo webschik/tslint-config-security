@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -18,7 +19,7 @@ class RuleWalker extends Lint.RuleWalker {
         const parent: ts.CallExpression = node.parent as ts.CallExpression;
         const firstArgument: undefined | ts.Expression = parent && parent.arguments && parent.arguments[0];
 
-        if (expression && name && firstArgument && firstArgument.kind !== ts.SyntaxKind.StringLiteral) {
+        if (expression && name && firstArgument && !stringLiteralKinds.includes(firstArgument.kind)) {
             const method: string = name.text;
 
             if (expression.text === 'document' && unsafeDocumentHtmlMethods.includes(method)) {
@@ -38,11 +39,11 @@ class RuleWalker extends Lint.RuleWalker {
         if (
             node.operatorToken &&
             node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-            right &&
-            right.kind !== ts.SyntaxKind.StringLiteral &&
             left &&
             left.kind === ts.SyntaxKind.PropertyAccessExpression &&
             left.name &&
+            right &&
+            !stringLiteralKinds.includes(right.kind) &&
             unsafeElementHtmlProps.includes(left.name.text)
         ) {
             this.addFailureAtNode(node, `Found Element.${left.name.text} with non-literal value`);

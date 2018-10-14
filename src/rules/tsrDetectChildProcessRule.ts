@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {StringLiteral, stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -12,12 +13,12 @@ class RuleWalker extends Lint.RuleWalker {
 
     visitCallExpression(node: ts.CallExpression) {
         const {expression} = node;
-        const firstArgument: ts.StringLiteral = node.arguments && (node.arguments[0] as ts.StringLiteral);
+        const firstArgument: StringLiteral = node.arguments && (node.arguments[0] as StringLiteral);
 
         if (
             firstArgument &&
             expression &&
-            firstArgument.kind === ts.SyntaxKind.StringLiteral &&
+            stringLiteralKinds.includes(firstArgument.kind) &&
             firstArgument.text === 'child_process' &&
             expression.getText() === 'require'
         ) {

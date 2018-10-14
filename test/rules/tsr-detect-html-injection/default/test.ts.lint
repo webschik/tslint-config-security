@@ -17,12 +17,36 @@ export class User {
 }
 
 document.write('Test content');
+document.write(`Test content`);
 document.write(content);
 ~~~~~~~~~~~~~~~~~~~~~~~  [Found document.write with non-literal argument]
+document.write(`Test ${ content }`);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found document.write with non-literal argument]
+
+document.writeln('Test content');
+document.writeln(`Test content`);
+document.writeln(content);
+~~~~~~~~~~~~~~~~~~~~~~~~~  [Found document.writeln with non-literal argument]
+document.writeln(`Test ${ content }`);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found document.writeln with non-literal argument]
+
+el.insertAdjacentHTML("Test content");
+el.insertAdjacentHTML(`Test content`);
 el.insertAdjacentHTML(content);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found Element.insertAdjacentHTML with non-literal argument]
+el.insertAdjacentHTML(`${ content }`);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found Element.insertAdjacentHTML with non-literal argument]
+
 el.innerHTML = 'Test content';
+el.innerHTML = `Test content`;
 el.innerHTML = data;
 ~~~~~~~~~~~~~~~~~~~  [Found Element.innerHTML with non-literal value]
+el.innerHTML = `${ data }`;
+~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found Element.innerHTML with non-literal value]
+
+el.outerHTML = 'Test content';
+el.outerHTML = `Test content`;
 el.outerHTML = data;
 ~~~~~~~~~~~~~~~~~~~  [Found Element.outerHTML with non-literal value]
+el.outerHTML = `${ data }`;
+~~~~~~~~~~~~~~~~~~~~~~~~~~  [Found Element.outerHTML with non-literal value]

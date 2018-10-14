@@ -1,6 +1,7 @@
 import * as Lint from 'tslint';
 import * as ts from 'typescript';
 import fsModuleMethodsArgumentsInfo from '../fs-module-methods-arguments-info';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
@@ -24,7 +25,7 @@ class RuleWalker extends Lint.RuleWalker {
                 const invalidArgumentIndices: number[] = fsArgsInfo.filter((index: number) => {
                     const arg: ts.Expression = methodArguments[index];
 
-                    return Boolean(arg && arg.kind !== ts.SyntaxKind.StringLiteral);
+                    return Boolean(arg && !stringLiteralKinds.includes(arg.kind));
                 });
 
                 if (invalidArgumentIndices[0] !== undefined) {

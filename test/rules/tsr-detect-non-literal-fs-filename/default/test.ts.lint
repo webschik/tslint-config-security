@@ -1,7 +1,10 @@
 const fs = require('fs');
 
 const file1 = fs.open('test');
+const file1 = fs.open(`test`);
 const file2 = fs.open(test);
+              ~~~~~~~        [Found fs.open with non-literal argument at index 0]
+const file2 = fs.open(`${ test }`);
               ~~~~~~~        [Found fs.open with non-literal argument at index 0]
 
 require('fs').symlink(path1, path2);
@@ -10,7 +13,13 @@ fs.symlink('path1', path2);
 ~~~~~~~~~~                  [Found fs.symlink with non-literal argument at index 1]
 require("fs").symlink(path1, 'path2');
 ~~~~~~~~~~~~~~~~~~~~~                  [Found fs.symlink with non-literal argument at index 0]
+require("fs").symlink(path1, `${ path2 }`);
+~~~~~~~~~~~~~~~~~~~~~                  [Found fs.symlink with non-literal argument at index 0, 1]
+require("fs").symlink(`${ path1 }`, 'path2');
+~~~~~~~~~~~~~~~~~~~~~                  [Found fs.symlink with non-literal argument at index 0]
 fs.symlink('path1', 'path2');
+fs.symlink('path1', `path2`);
+fs.symlink(`path1`, 'path2');
 fs.toString();
 
 const s = 'test';

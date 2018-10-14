@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {StringLiteral, stringLiteralKinds} from '../node-kind';
 
 const isSafeRegexp = require('safe-regex');
 
@@ -20,13 +21,13 @@ class RuleWalker extends Lint.RuleWalker {
 
     visitNewExpression(node: ts.NewExpression) {
         const expression: ts.Identifier = node.expression as ts.Identifier;
-        const firstArgument: undefined | ts.StringLiteral = node.arguments && (node.arguments[0] as ts.StringLiteral);
+        const firstArgument: undefined | StringLiteral = node.arguments && (node.arguments[0] as StringLiteral);
 
         if (
             expression &&
             expression.text === 'RegExp' &&
             firstArgument &&
-            firstArgument.kind === ts.SyntaxKind.StringLiteral &&
+            stringLiteralKinds.includes(firstArgument.kind) &&
             firstArgument.text &&
             !isSafeRegexp(firstArgument.text)
         ) {

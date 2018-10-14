@@ -1,3 +1,6 @@
 const pattern1 = new RegExp('ab+c', 'i');
-const pattern2 = new RegExp(data, 'i');
+const pattern2 = new RegExp(`ab+c`, 'i');
+const pattern3 = new RegExp(data, 'i');
                  ~~~~~~~~~~~~~~~~~~~~~    [Found non-literal argument to RegExp Constructor]
+const pattern4 = new RegExp(`${ data }`, 'i');
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found non-literal argument to RegExp Constructor]

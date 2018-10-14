@@ -1,3 +1,6 @@
 eval('alert()');
+eval(`alert()`);
+eval(`${ fn }()`);
+~~~~~~~~~~~~~~~~~        [eval with argument of type TemplateExpression]
 eval(a);
 ~~~~~~~        [eval with argument of type Identifier]

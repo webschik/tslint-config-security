@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import {StringLiteral, stringLiteralKinds} from '../node-kind';
 
 const keywordMask = new RegExp(
     '^.*((' + ['password', 'secret', 'api', 'apiKey', 'token', 'auth', 'pass', 'hash'].join(')|(') + ')).*$',
@@ -26,12 +27,13 @@ function containsKeywordCallExpression(node: ts.CallExpression) {
 }
 
 function containsKeywordElementAccessExpression(node: ts.ElementAccessExpression) {
-    if (node.argumentExpression.kind === ts.SyntaxKind.StringLiteral) {
-        const argumentExpression = node.argumentExpression as ts.StringLiteral;
+    if (stringLiteralKinds.includes(node.argumentExpression.kind)) {
+        const argumentExpression: StringLiteral = node.argumentExpression as StringLiteral;
+
         return containsKeyword(node.expression) || Boolean(keywordMask.test(argumentExpression.text));
-    } else {
-        return containsKeyword(node.expression) || containsKeyword(node.argumentExpression);
     }
+
+    return containsKeyword(node.expression) || containsKeyword(node.argumentExpression);
 }
 
 function containsKeywordIdentifier(node: ts.Identifier) {
@@ -43,6 +45,10 @@ function containsKeywordPropertyAccessExpression(node: ts.PropertyAccessExpressi
 }
 
 function isVulnerableType(node: ts.Expression): boolean {
+    if (stringLiteralKinds.includes(node.kind)) {
+        return true;
+    }
+
     switch (node.kind) {
         case ts.SyntaxKind.CallExpression:
             return isVulnerableCallExpression(node as ts.CallExpression);
@@ -52,8 +58,6 @@ function isVulnerableType(node: ts.Expression): boolean {
             return true;
         case ts.SyntaxKind.PropertyAccessExpression:
             return isVulnerablePropertyAccessExpression(node as ts.PropertyAccessExpression);
-        case ts.SyntaxKind.StringLiteral:
-            return true;
         default:
             return false;
     }

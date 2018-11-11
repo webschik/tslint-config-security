@@ -8,7 +8,7 @@ export class Rule extends Lint.Rules.AbstractRule {
 }
 
 class RuleWalker extends Lint.RuleWalker {
-    private isCsrfFound: boolean;
+    private isCsrfFound?: boolean;
 
     visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
         const name: ts.Identifier = node.name as ts.Identifier;

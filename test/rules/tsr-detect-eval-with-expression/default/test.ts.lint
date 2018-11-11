@@ -4,3 +4,10 @@ eval(`${ fn }()`);
 ~~~~~~~~~~~~~~~~~        [eval with argument of type TemplateExpression]
 eval(a);
 ~~~~~~~        [eval with argument of type Identifier]
+
+new Function('a', 'b', 'return a + b')
+new Function(`a`, 'b', 'return a + b')
+new Function(a, 'b', 'return a + b')
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        [Found function constructor with non-literal argument]
+new Function(`${ a }`, 'b', 'return a + b')
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        [Found function constructor with non-literal argument]

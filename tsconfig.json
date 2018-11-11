@@ -14,8 +14,9 @@
     "suppressImplicitAnyIndexErrors": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "strict": true,
     "pretty": true,
-    "removeComments": true,
+    "removeComments": true
   },
   "exclude": [
     "node_modules"

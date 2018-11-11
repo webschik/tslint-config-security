@@ -19,4 +19,16 @@ class RuleWalker extends Lint.RuleWalker {
 
         super.visitCallExpression(node);
     }
+
+    visitNewExpression(node: ts.NewExpression) {
+        if (
+            node.arguments &&
+            node.expression.getText() === 'Function' &&
+            node.arguments.some((node: ts.Node) => !stringLiteralKinds.includes(node.kind))
+        ) {
+            this.addFailureAtNode(node, 'Found function constructor with non-literal argument');
+        }
+
+        super.visitNewExpression(node);
+    }
 }

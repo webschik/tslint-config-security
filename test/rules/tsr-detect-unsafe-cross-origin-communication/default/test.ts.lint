@@ -1,0 +1,11 @@
+const myWindow = document.getElementById('myIFrame').contentWindow;
+
+myWindow.postMessage(message, "*");
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found a wildcard keyword (*) in the targetOrigin argument]
+myWindow.postMessage(message, '*');
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found a wildcard keyword (*) in the targetOrigin argument]
+myWindow.postMessage(message, ' *');
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found a wildcard keyword (*) in the targetOrigin argument]
+myWindow.postMessage(message, `*`);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    [Found a wildcard keyword (*) in the targetOrigin argument]
+myWindow.postMessage(message, "http://example.com");

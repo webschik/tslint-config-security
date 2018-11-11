@@ -191,3 +191,17 @@ db.query('SELECT * FROM `books` WHERE `author` = ?', ['David'], function (error,
 ```
 
 More examples: [test/rules/tsr-detect-sql-literal-injection/default/test.ts.lint](test/rules/tsr-detect-sql-literal-injection/default/test.ts.lint)
+
+#### `tsr-detect-unsafe-cross-origin-communication`
+
+Detects when all windows & frames on your page (including ones that were injected by 3rd-party scripts)
+may receive your data.
+
+> Always provide a specific targetOrigin, not *, if you know where the other window's document should be located. Failing to provide a specific target discloses the data you send to any interested malicious site.
+> https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
+
+```js
+const myWindow = document.getElementById('myIFrame').contentWindow;
+
+myWindow.postMessage(message, "*"); // Noncompliant
+```

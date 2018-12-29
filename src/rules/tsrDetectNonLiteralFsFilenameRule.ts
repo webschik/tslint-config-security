@@ -9,7 +9,8 @@ export class Rule extends Lint.Rules.AbstractRule {
     }
 }
 
-const expressionsToCheck: string[] = ['fs', `require('fs')`, `require("fs")`];
+const expressionsToCheck: string[] = ['fs', `require('fs')`, 'require("fs")', 'require(`fs`)'];
+const reservedIdentifiers: string[] = ['__dirname'];
 
 class RuleWalker extends Lint.RuleWalker {
     visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
@@ -25,7 +26,48 @@ class RuleWalker extends Lint.RuleWalker {
                 const invalidArgumentIndices: number[] = fsArgsInfo.filter((index: number) => {
                     const arg: ts.Expression = methodArguments[index];
 
-                    return Boolean(arg && !stringLiteralKinds.includes(arg.kind));
+                    if (!arg) {
+                        return false;
+                    }
+                    const {kind} = arg;
+
+                    if (kind === ts.SyntaxKind.BinaryExpression) {
+                        const {left, right} = arg as ts.BinaryExpression;
+
+                        if (
+                            left &&
+                            left.kind === ts.SyntaxKind.Identifier &&
+                            reservedIdentifiers.includes(left.getText())
+                        ) {
+                            return Boolean(right && !stringLiteralKinds.includes(right.kind));
+                        }
+
+                        if (
+                            right &&
+                            right.kind === ts.SyntaxKind.Identifier &&
+                            reservedIdentifiers.includes(right.getText())
+                        ) {
+                            return Boolean(left && !stringLiteralKinds.includes(left.kind));
+                        }
+                    }
+
+                    if (kind === ts.SyntaxKind.TemplateExpression) {
+                        const {templateSpans = []} = arg as ts.TemplateExpression;
+                        const [firstTemplateSpan] = templateSpans;
+                        const firstTemplateSpanExpr: ts.Expression | void =
+                            firstTemplateSpan && firstTemplateSpan.expression;
+
+                        if (
+                            firstTemplateSpanExpr &&
+                            firstTemplateSpanExpr.kind === ts.SyntaxKind.Identifier &&
+                            reservedIdentifiers.includes(firstTemplateSpanExpr.getText()) &&
+                            !templateSpans[1]
+                        ) {
+                            return false;
+                        }
+                    }
+
+                    return !stringLiteralKinds.includes(kind);
                 });
 
                 if (invalidArgumentIndices[0] !== undefined) {

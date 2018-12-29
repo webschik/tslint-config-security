@@ -34,3 +34,8 @@ require('lodash-exists');
 if (_.exists(memberId)) {
   this.memberId = memberId;
 }
+
+fs.readFileSync(__dirname + 'filename.txt', 'utf-8')
+fs.readFileSync(`${__dirname}filename.txt`, 'utf-8')
+fs.readFileSync(`${__dirname}${path1}.txt`, 'utf-8')
+~~~~~~~~~~~~~~~                                      [Found fs.readFileSync with non-literal argument at index 0]

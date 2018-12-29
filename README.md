@@ -43,7 +43,9 @@ Locates potentially unsafe regular expressions, which may take a very long time 
 
 Examples: [test/rules/tsr-detect-unsafe-regexp/default/test.ts.lint](test/rules/tsr-detect-unsafe-regexp/default/test.ts.lint)
 
-More information: https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js
+More information:
+* https://web.archive.org/web/20170131192028/https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js#regular-expression-dos-and-nodejs
+* https://snyk.io/blog/redos-and-catastrophic-backtracking
 
 #### `tsr-detect-non-literal-buffer`
 
@@ -63,7 +65,7 @@ Examples: [test/rules/tsr-detect-buffer-noassert/default/test.ts.lint](test/rule
 
 Detects instances of [`child_process`](https://nodejs.org/api/child_process.html) & non-literal [`exec()`](https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback)
 
-More information: https://blog.liftsecurity.io/2014/08/19/Avoid-Command-Injection-Node.js
+More information: https://web.archive.org/web/20170129010544/https://blog.liftsecurity.io/2014/08/19/Avoid-Command-Injection-Node.js#avoiding-command-injection-in-nodejs
 
 Examples: [test/rules/tsr-detect-child-process/default/test.ts.lint](test/rules/tsr-detect-child-process/default/test.ts.lint)
 
@@ -87,7 +89,7 @@ Examples: [test/rules/tsr-detect-eval-with-expression/default/test.ts.lint](test
 
 Detects Express `csrf` middleware setup before `method-override` middleware. This can allow `GET` requests (which are not checked by `csrf`) to turn into `POST` requests later.
 
-More information: https://blog.liftsecurity.io/2013/09/07/bypass-connect-csrf-protection-by-abusing
+More information: http://blog.nibblesec.org/2014/05/nodejs-connect-csrf-bypass-abusing.html
 
 Examples: [test/rules/tsr-detect-no-csrf-before-method-override/default/test.ts.lint](test/rules/tsr-detect-no-csrf-before-method-override/default/test.ts.lint)
 
@@ -99,7 +101,7 @@ More information: https://www.owasp.org/index.php/Path_Traversal
 
 **Known limitations**
 
-Due to the known issues in the typed TSLint rules
+Due to the known issues in the typed TSLint rules:
 
 * https://github.com/Microsoft/vscode-tslint/issues/70
 * https://github.com/Microsoft/vscode-tslint/blob/master/tslint/README.md#how-can-i-use-tslint-rules-that-require-type-information
@@ -125,7 +127,9 @@ More examples: [test/rules/tsr-detect-non-literal-fs-filename/default/test.ts.li
 
 Detects `RegExp(variable)`, which might allow an attacker to DOS your server with a long-running regular expression.
 
-More information: https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js
+More information: 
+
+* https://web.archive.org/web/20170131192028/https://blog.liftsecurity.io/2014/11/03/regular-expression-dos-and-node.js#regular-expression-dos-and-nodejs
 
 Examples: [test/rules/tsr-detect-non-literal-regexp/default/test.ts.lint](test/rules/tsr-detect-non-literal-regexp/default/test.ts.lint)
 

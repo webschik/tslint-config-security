@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 
 const readMethods: string[] = [
     'readUInt8',

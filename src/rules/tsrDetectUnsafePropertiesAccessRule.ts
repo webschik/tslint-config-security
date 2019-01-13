@@ -9,16 +9,15 @@ export class Rule extends Lint.Rules.AbstractRule {
 
 class RuleWalker extends Lint.RuleWalker {
     visitCallExpression(node: ts.CallExpression) {
-        const {name} = node.expression as ts.PropertyAccessExpression;
-        const [, targetOrigin]: ts.NodeArray<ts.Expression> = node.arguments || [];
+        const {expression, arguments: args} = node;
 
         if (
-            name &&
-            targetOrigin &&
-            name.getText() === 'postMessage' &&
-            ((targetOrigin as ts.StringLiteral).text || '').trim() === '*'
+            expression &&
+            args &&
+            expression.kind === ts.SyntaxKind.ElementAccessExpression &&
+            args.find(ts.isIdentifier)
         ) {
-            this.addFailureAtNode(node, 'Found a wildcard keyword (*) in the targetOrigin argument');
+            this.addFailureAtNode(node, 'Found unsafe properties access');
         }
 
         super.visitCallExpression(node);

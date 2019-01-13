@@ -31,6 +31,7 @@ By default `tslint-config-security` enables [all rules](#rules), but you may dis
     "tsr-detect-html-injection": false,
     "tsr-detect-unsafe-regexp": false
   }
+}
 ```
 
 
@@ -209,3 +210,34 @@ const myWindow = document.getElementById('myIFrame').contentWindow;
 
 myWindow.postMessage(message, "*"); // Noncompliant
 ```
+
+#### tsr-detect-unsafe-properties-access
+
+Detects a potential unsafe access to the object properties
+
+```js
+/* 
+
+It equals to `new Function(prop3)`
+
+const a = {};
+
+a["constructor"]["constructor"]("alert(1)")()
+ */
+ 
+// unsafe
+obj[prop1][prop2](prop3)
+
+// unsafe
+obj[prop1][prop2](prop3)()  
+ 
+```
+
+More information:
+* [Web Puzzlers - Securing Dynamic Systems](https://youtu.be/SkNWAjDRLDY)
+* [Defensive JavaScript](https://www.javascriptjanuary.com/blog/defensive-javascript)
+
+Solutions:
+* use [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+* use `.hasOwnProperty` check
+* use `Content-Security-Policy` on your page

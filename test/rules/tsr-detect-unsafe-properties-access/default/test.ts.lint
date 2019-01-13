@@ -1,0 +1,8 @@
+obj[prop1][prop2](prop3)
+~~~~~~~~~~~~~~~~~~~~~~~~    [Found unsafe properties access]
+
+obj[prop1][prop2](prop3)()
+~~~~~~~~~~~~~~~~~~~~~~~~    [Found unsafe properties access]
+
+obj[prop1][prop2].knownApiMethod()
+obj.prop1.prop2(prop3)

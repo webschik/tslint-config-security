@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 import {stringLiteralKinds} from '../node-kind';
 import syntaxKindToName from '../syntax-kind-to-name';
 

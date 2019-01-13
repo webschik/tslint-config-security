@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {

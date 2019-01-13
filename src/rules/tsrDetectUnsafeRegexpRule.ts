@@ -1,8 +1,8 @@
-import * as ts from 'typescript';
+// @ts-ignore
+import * as isSafeRegexp from 'safe-regex';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 import {StringLiteral, stringLiteralKinds} from '../node-kind';
-
-const isSafeRegexp = require('safe-regex');
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {

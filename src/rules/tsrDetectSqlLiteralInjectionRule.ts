@@ -1,5 +1,5 @@
-import * as ts from 'typescript';
 import * as Lint from 'tslint';
+import * as ts from 'typescript';
 import {isSqlQuery} from '../is-sql-query';
 import {stringLiteralKinds} from '../node-kind';
 

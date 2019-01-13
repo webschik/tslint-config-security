@@ -15,6 +15,7 @@ module.exports = {
         'tsr-disable-mustache-escape': [true],
         'tsr-detect-html-injection': [true],
         'tsr-detect-sql-literal-injection': [true],
-        'tsr-detect-unsafe-cross-origin-communication': [true]
+        'tsr-detect-unsafe-cross-origin-communication': [true],
+        'tsr-detect-unsafe-properties-access': [true]
     }
 };

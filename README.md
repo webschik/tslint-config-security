@@ -211,7 +211,7 @@ const myWindow = document.getElementById('myIFrame').contentWindow;
 myWindow.postMessage(message, "*"); // Noncompliant
 ```
 
-#### tsr-detect-unsafe-properties-access
+#### `tsr-detect-unsafe-properties-access`
 
 Detects a potential unsafe access to the object properties
 

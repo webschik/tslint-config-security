@@ -70,7 +70,7 @@ More information: https://web.archive.org/web/20170129010544/https://blog.liftse
 
 Examples: [test/rules/tsr-detect-child-process/default/test.ts.lint](test/rules/tsr-detect-child-process/default/test.ts.lint)
 
-#### `tsr-detect-disable-mustache-escape`
+#### `tsr-disable-mustache-escape`
 
 Detects `object.escapeMarkup = false`, which can be used with some template engines to disable escaping of HTML entities. This can lead to Cross-Site Scripting (XSS) vulnerabilities.
 

@@ -1,48 +1,60 @@
 import * as Lint from 'tslint';
 import * as ts from 'typescript';
-import {StringLiteral, stringLiteralKinds} from '../node-kind';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    private names: string[] = [];
+function walk(ctx: Lint.WalkContext<void>) {
+    const names: string[] = [];
 
-    visitCallExpression(node: ts.CallExpression) {
-        const {expression} = node;
-        const firstArgument: StringLiteral = node.arguments && (node.arguments[0] as StringLiteral);
+    function visitNode(node: ts.Node): void {
+        switch (node.kind) {
+            case ts.SyntaxKind.CallExpression: {
+                const {expression, arguments: args} = node as ts.CallExpression;
+                const firstArgument = args && args[0];
 
-        if (
-            firstArgument &&
-            expression &&
-            stringLiteralKinds.includes(firstArgument.kind) &&
-            firstArgument.text === 'child_process' &&
-            expression.getText() === 'require'
-        ) {
-            const parent: ts.VariableDeclaration = node.parent as ts.VariableDeclaration;
+                if (
+                    firstArgument &&
+                    expression &&
+                    stringLiteralKinds.includes(firstArgument.kind) &&
+                    (firstArgument as ts.StringLiteral).text === 'child_process' &&
+                    (expression as ts.StringLiteral).text === 'require'
+                ) {
+                    const parent: ts.VariableDeclaration = node.parent as ts.VariableDeclaration;
 
-            this.names.length = 0;
+                    names.length = 0;
 
-            if (parent && parent.kind === ts.SyntaxKind.VariableDeclaration) {
-                this.names.push(parent.name.getText());
+                    if (parent && parent.kind === ts.SyntaxKind.VariableDeclaration) {
+                        names.push((parent.name as ts.Identifier).text);
+                    }
+
+                    ctx.addFailureAtNode(node, 'Found require("child_process")');
+                }
+                break;
             }
+            case ts.SyntaxKind.PropertyAccessExpression: {
+                const {name, expression} = node as ts.PropertyAccessExpression;
 
-            this.addFailureAtNode(node, 'Found require("child_process")');
+                if (
+                    name &&
+                    expression &&
+                    name.text === 'exec' &&
+                    names.indexOf((expression as ts.Identifier).text) >= 0
+                ) {
+                    ctx.addFailureAtNode(node, 'Found child_process.exec() with non StringLiteral first argument');
+                }
+                break;
+            }
+            default:
+            //
         }
 
-        super.visitCallExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
 
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const {name, expression} = node;
-
-        if (name && expression && name.getText() === 'exec' && this.names.indexOf(expression.getText()) >= 0) {
-            this.addFailureAtNode(node, 'Found child_process.exec() with non StringLiteral first argument');
-        }
-
-        super.visitPropertyAccessExpression(node);
-    }
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

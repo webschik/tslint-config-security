@@ -3,25 +3,29 @@ import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    private isCsrfFound?: boolean;
+function walk(ctx: Lint.WalkContext<void>) {
+    let isCsrfFound: boolean | undefined;
 
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const name: ts.Identifier = node.name as ts.Identifier;
-        const expression: ts.Identifier = node.expression as ts.Identifier;
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.PropertyAccessExpression) {
+            const {name, expression} = node as ts.PropertyAccessExpression;
+            const nameText: string | undefined = name && (name as ts.Identifier).text;
 
-        if (name && expression && expression.text === 'express') {
-            if (name.text === 'methodOverride' && this.isCsrfFound) {
-                this.addFailureAtNode(node, 'express.csrf() middleware found before express.methodOverride()');
-            } else if (name.text === 'csrf') {
-                this.isCsrfFound = true;
+            if (expression && (expression as ts.Identifier).text === 'express') {
+                if (isCsrfFound && nameText === 'methodOverride') {
+                    ctx.addFailureAtNode(node, 'express.csrf() middleware found before express.methodOverride()');
+                } else if (nameText === 'csrf') {
+                    isCsrfFound = true;
+                }
             }
         }
 
-        super.visitPropertyAccessExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

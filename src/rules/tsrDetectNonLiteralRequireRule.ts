@@ -4,24 +4,28 @@ import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitCallExpression(node: ts.CallExpression) {
-        const expression: ts.Identifier = node.expression as ts.Identifier;
-        const firstArgument: undefined | ts.Expression = node.arguments && node.arguments[0];
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.CallExpression) {
+            const {expression, arguments: args} = node as ts.CallExpression;
+            const firstArgument: undefined | ts.Expression = args && args[0];
 
-        if (
-            expression &&
-            expression.text === 'require' &&
-            firstArgument &&
-            !stringLiteralKinds.includes(firstArgument.kind)
-        ) {
-            this.addFailureAtNode(node, 'Found non-literal argument in require');
+            if (
+                expression &&
+                firstArgument &&
+                (expression as ts.Identifier).text === 'require' &&
+                !stringLiteralKinds.includes(firstArgument.kind)
+            ) {
+                ctx.addFailureAtNode(node, 'Found non-literal argument in require');
+            }
         }
 
-        super.visitCallExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

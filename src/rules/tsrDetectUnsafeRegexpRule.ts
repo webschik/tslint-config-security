@@ -2,38 +2,48 @@
 import * as isSafeRegexp from 'safe-regex';
 import * as Lint from 'tslint';
 import * as ts from 'typescript';
-import {StringLiteral, stringLiteralKinds} from '../node-kind';
+import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitRegularExpressionLiteral(node: ts.RegularExpressionLiteral) {
-        if (node.text && !isSafeRegexp(node.text)) {
-            this.addFailureAtNode(node, 'Unsafe Regular Expression');
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        switch (node.kind) {
+            case ts.SyntaxKind.RegularExpressionLiteral: {
+                const {text} = node as ts.RegularExpressionLiteral;
+
+                if (text && !isSafeRegexp(text)) {
+                    ctx.addFailureAtNode(node, 'Unsafe Regular Expression');
+                }
+                break;
+            }
+            case ts.SyntaxKind.NewExpression: {
+                const {expression, arguments: args} = node as ts.NewExpression;
+                const firstArgument = args && args[0];
+                const firstArgumentText: string | undefined = firstArgument && (firstArgument as ts.StringLiteral).text;
+
+                if (
+                    expression &&
+                    firstArgument &&
+                    (expression as ts.Identifier).text === 'RegExp' &&
+                    stringLiteralKinds.includes(firstArgument.kind) &&
+                    firstArgumentText &&
+                    !isSafeRegexp(firstArgumentText)
+                ) {
+                    ctx.addFailureAtNode(node, 'Unsafe Regular Expression (new RegExp)');
+                }
+                break;
+            }
+            default:
+            //
         }
 
-        super.visitRegularExpressionLiteral(node);
+        return ts.forEachChild(node, visitNode);
     }
 
-    visitNewExpression(node: ts.NewExpression) {
-        const expression: ts.Identifier = node.expression as ts.Identifier;
-        const firstArgument: undefined | StringLiteral = node.arguments && (node.arguments[0] as StringLiteral);
-
-        if (
-            expression &&
-            expression.text === 'RegExp' &&
-            firstArgument &&
-            stringLiteralKinds.includes(firstArgument.kind) &&
-            firstArgument.text &&
-            !isSafeRegexp(firstArgument.text)
-        ) {
-            this.addFailureAtNode(node, 'Unsafe Regular Expression (new RegExp)');
-        }
-
-        super.visitNewExpression(node);
-    }
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

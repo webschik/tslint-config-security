@@ -4,7 +4,7 @@ import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
@@ -12,43 +12,54 @@ const unsafeDocumentHtmlMethods: string[] = ['writeln', 'write'];
 const unsafeElementHtmlMethods: string[] = ['insertAdjacentHTML'];
 const unsafeElementHtmlProps: string[] = ['outerHTML', 'innerHTML'];
 
-class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const expression: ts.Identifier = node.expression as ts.Identifier;
-        const name: ts.Identifier = node.name;
-        const parent: ts.CallExpression = node.parent as ts.CallExpression;
-        const firstArgument: undefined | ts.Expression = parent && parent.arguments && parent.arguments[0];
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        switch (node.kind) {
+            case ts.SyntaxKind.PropertyAccessExpression: {
+                const {expression, name} = node as ts.PropertyAccessExpression;
+                const parent: ts.CallExpression = node.parent as ts.CallExpression;
+                const firstArgument: undefined | ts.Expression = parent && parent.arguments && parent.arguments[0];
 
-        if (expression && name && firstArgument && !stringLiteralKinds.includes(firstArgument.kind)) {
-            const method: string = name.text;
+                if (expression && name && firstArgument && !stringLiteralKinds.includes(firstArgument.kind)) {
+                    const method: string = name.text;
 
-            if (expression.text === 'document' && unsafeDocumentHtmlMethods.includes(method)) {
-                this.addFailureAtNode(parent, `Found document.${method} with non-literal argument`);
-            } else if (unsafeElementHtmlMethods.includes(method)) {
-                this.addFailureAtNode(parent, `Found Element.${method} with non-literal argument`);
+                    if (
+                        (expression as ts.Identifier).text === 'document' &&
+                        unsafeDocumentHtmlMethods.includes(method)
+                    ) {
+                        ctx.addFailureAtNode(parent, `Found document.${method} with non-literal argument`);
+                    } else if (unsafeElementHtmlMethods.includes(method)) {
+                        ctx.addFailureAtNode(parent, `Found Element.${method} with non-literal argument`);
+                    }
+                }
+
+                break;
             }
+            case ts.SyntaxKind.BinaryExpression: {
+                const {left, right, operatorToken} = node as ts.BinaryExpression;
+                const leftName: ts.Identifier | undefined = left && (left as ts.PropertyAccessExpression).name;
+
+                if (
+                    operatorToken &&
+                    operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+                    left &&
+                    left.kind === ts.SyntaxKind.PropertyAccessExpression &&
+                    leftName &&
+                    right &&
+                    !stringLiteralKinds.includes(right.kind) &&
+                    unsafeElementHtmlProps.includes(leftName.text)
+                ) {
+                    ctx.addFailureAtNode(node, `Found Element.${leftName.text} with non-literal value`);
+                }
+
+                break;
+            }
+            default:
+            //
         }
 
-        super.visitPropertyAccessExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
 
-    visitBinaryExpression(node: ts.BinaryExpression) {
-        const left: ts.PropertyAccessExpression = node.left as ts.PropertyAccessExpression;
-        const right: ts.Expression = node.right;
-
-        if (
-            node.operatorToken &&
-            node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-            left &&
-            left.kind === ts.SyntaxKind.PropertyAccessExpression &&
-            left.name &&
-            right &&
-            !stringLiteralKinds.includes(right.kind) &&
-            unsafeElementHtmlProps.includes(left.name.text)
-        ) {
-            this.addFailureAtNode(node, `Found Element.${left.name.text} with non-literal value`);
-        }
-
-        super.visitBinaryExpression(node);
-    }
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

@@ -37,35 +37,39 @@ const writeMethods: string[] = [
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const {name} = node;
-        const parent: ts.CallExpression = node.parent as ts.CallExpression;
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.PropertyAccessExpression) {
+            const {name, expression} = node as ts.PropertyAccessExpression;
+            const parent: ts.CallExpression = node.parent as ts.CallExpression;
 
-        if (parent && parent.kind === ts.SyntaxKind.CallExpression && node.expression && name) {
-            const methodName: string = name.getText();
-            let argumentIndex: number = -1;
+            if (parent && parent.kind === ts.SyntaxKind.CallExpression && expression && name) {
+                const methodName: string = name.text;
+                let argumentIndex: number = -1;
 
-            if (readMethods.indexOf(methodName) !== -1) {
-                argumentIndex = 1;
-            } else if (writeMethods.indexOf(methodName) !== -1) {
-                argumentIndex = 2;
-            }
+                if (readMethods.indexOf(methodName) !== -1) {
+                    argumentIndex = 1;
+                } else if (writeMethods.indexOf(methodName) !== -1) {
+                    argumentIndex = 2;
+                }
 
-            if (
-                argumentIndex !== -1 &&
-                parent.arguments &&
-                parent.arguments[argumentIndex] &&
-                parent.arguments[argumentIndex].kind === ts.SyntaxKind.TrueKeyword
-            ) {
-                this.addFailureAtNode(node, `Found Buffer.${methodName} with noAssert flag set true`);
+                if (
+                    argumentIndex !== -1 &&
+                    parent.arguments &&
+                    parent.arguments[argumentIndex] &&
+                    parent.arguments[argumentIndex].kind === ts.SyntaxKind.TrueKeyword
+                ) {
+                    ctx.addFailureAtNode(node, `Found Buffer.${methodName} with noAssert flag set true`);
+                }
             }
         }
 
-        super.visitPropertyAccessExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

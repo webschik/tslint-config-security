@@ -3,21 +3,25 @@ import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const name: ts.Identifier = node.name;
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.PropertyAccessExpression) {
+            const {name} = node as ts.PropertyAccessExpression;
 
-        if (name && name.text === 'pseudoRandomBytes') {
-            this.addFailureAtNode(
-                node,
-                'Found crypto.pseudoRandomBytes which does not produce cryptographically strong numbers'
-            );
+            if (name && name.text === 'pseudoRandomBytes') {
+                ctx.addFailureAtNode(
+                    node,
+                    'Found crypto.pseudoRandomBytes which does not produce cryptographically strong numbers'
+                );
+            }
         }
 
-        super.visitPropertyAccessExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

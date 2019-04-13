@@ -77,29 +77,34 @@ function isVulnerablePropertyAccessExpression(node: ts.PropertyAccessExpression)
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitBinaryExpression(node: ts.BinaryExpression) {
-        const operatorTokenKind = node.operatorToken.kind;
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.BinaryExpression) {
+            const {left, right, operatorToken} = node as ts.BinaryExpression;
+            const operatorTokenKind = operatorToken.kind;
 
-        if (
-            operatorTokenKind === ts.SyntaxKind.EqualsEqualsToken ||
-            operatorTokenKind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
-            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsToken ||
-            operatorTokenKind === ts.SyntaxKind.ExclamationEqualsEqualsToken
-        ) {
-            if (isVulnerableType(node.left) && isVulnerableType(node.right)) {
-                if (containsKeyword(node.left)) {
-                    this.addFailureAtNode(node, 'Potential timing attack on the left side of expression');
-                } else if (containsKeyword(node.right)) {
-                    this.addFailureAtNode(node, 'Potential timing attack on the right side of expression');
+            if (
+                operatorTokenKind === ts.SyntaxKind.EqualsEqualsToken ||
+                operatorTokenKind === ts.SyntaxKind.EqualsEqualsEqualsToken ||
+                operatorTokenKind === ts.SyntaxKind.ExclamationEqualsToken ||
+                operatorTokenKind === ts.SyntaxKind.ExclamationEqualsEqualsToken
+            ) {
+                if (isVulnerableType(left) && isVulnerableType(right)) {
+                    if (containsKeyword(left)) {
+                        ctx.addFailureAtNode(node, 'Potential timing attack on the left side of expression');
+                    } else if (containsKeyword(right)) {
+                        ctx.addFailureAtNode(node, 'Potential timing attack on the right side of expression');
+                    }
                 }
             }
         }
 
-        super.visitBinaryExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

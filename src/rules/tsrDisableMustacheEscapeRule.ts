@@ -3,27 +3,31 @@ import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-class RuleWalker extends Lint.RuleWalker {
-    visitPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-        const {name} = node;
-        const parent: ts.BinaryExpression = node.parent as ts.BinaryExpression;
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        if (node.kind === ts.SyntaxKind.PropertyAccessExpression) {
+            const {name} = node as ts.PropertyAccessExpression;
+            const parent: ts.BinaryExpression = node.parent as ts.BinaryExpression;
 
-        if (
-            name &&
-            parent &&
-            parent.operatorToken &&
-            parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
-            parent.right &&
-            parent.right.kind === ts.SyntaxKind.FalseKeyword &&
-            name.getText() === 'escapeMarkup'
-        ) {
-            this.addFailureAtNode(node, 'Markup escaping disabled');
+            if (
+                name &&
+                parent &&
+                parent.operatorToken &&
+                parent.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+                parent.right &&
+                parent.right.kind === ts.SyntaxKind.FalseKeyword &&
+                name.text === 'escapeMarkup'
+            ) {
+                ctx.addFailureAtNode(node, 'Markup escaping disabled');
+            }
         }
 
-        super.visitPropertyAccessExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
+
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

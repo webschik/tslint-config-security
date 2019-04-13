@@ -3,35 +3,42 @@ import * as ts from 'typescript';
 import {isSqlQuery} from '../is-sql-query';
 import {stringLiteralKinds} from '../node-kind';
 
+const generalErrorMessage: string = 'Found possible SQL injection';
+
 export class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-        return this.applyWithWalker(new RuleWalker(sourceFile, this.getOptions()));
+        return this.applyWithFunction(sourceFile, walk);
     }
 }
 
-const generalErrorMessage: string = 'Found possible SQL injection';
+function walk(ctx: Lint.WalkContext<void>) {
+    function visitNode(node: ts.Node): void {
+        switch (node.kind) {
+            case ts.SyntaxKind.TemplateExpression: {
+                const {parent} = node;
 
-class RuleWalker extends Lint.RuleWalker {
-    visitTemplateExpression(node: ts.TemplateExpression) {
-        const {parent} = node;
+                if (
+                    (!parent || parent.kind !== ts.SyntaxKind.TaggedTemplateExpression) &&
+                    isSqlQuery(node.getText().slice(1, -1))
+                ) {
+                    ctx.addFailureAtNode(node, generalErrorMessage);
+                }
+                break;
+            }
+            case ts.SyntaxKind.BinaryExpression: {
+                const {left} = node as ts.BinaryExpression;
 
-        if (
-            (!parent || parent.kind !== ts.SyntaxKind.TaggedTemplateExpression) &&
-            isSqlQuery(node.getText().slice(1, -1))
-        ) {
-            this.addFailureAtNode(node, generalErrorMessage);
+                if (left && stringLiteralKinds.includes(left.kind) && isSqlQuery(left.getText().slice(1, -1))) {
+                    ctx.addFailureAtNode(left, generalErrorMessage);
+                }
+                break;
+            }
+            default:
+            //
         }
 
-        super.visitTemplateExpression(node);
+        return ts.forEachChild(node, visitNode);
     }
 
-    visitBinaryExpression(node: ts.BinaryExpression) {
-        const {left} = node;
-
-        if (left && stringLiteralKinds.includes(left.kind) && isSqlQuery(left.getText().slice(1, -1))) {
-            this.addFailureAtNode(left, generalErrorMessage);
-        }
-
-        super.visitBinaryExpression(node);
-    }
+    return ts.forEachChild(ctx.sourceFile, visitNode);
 }

@@ -2,6 +2,18 @@ import * as Lint from 'tslint';
 import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-disable-mustache-escape',
+        description: 'Warns when escapeMarkup=false property with some template engines is used',
+        descriptionDetails: Lint.Utils.dedent`Any usage of escapeMarkup=false property will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-disable-mustache-escape`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

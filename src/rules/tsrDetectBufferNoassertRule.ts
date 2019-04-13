@@ -36,6 +36,19 @@ const writeMethods: string[] = [
 ];
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-buffer-noassert',
+        description: 'Warns when Buffer with noAssert flag is used',
+        descriptionDetails: Lint.Utils.dedent`Any usage of Buffer
+            with noAssert flag will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-buffer-noassert`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

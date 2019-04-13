@@ -3,6 +3,19 @@ import * as ts from 'typescript';
 import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-child-process',
+        description: 'Warns when child_process.exec() with non-literal first argument is used',
+        descriptionDetails: Lint.Utils.dedent`Any usage of child_process.exec()
+            with non-literal first argument will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-child-process`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

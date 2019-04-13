@@ -2,6 +2,19 @@ import * as Lint from 'tslint';
 import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-no-csrf-before-method-override',
+        description: 'Warns when csrf middleware for Express.js is setup before method-override middleware',
+        descriptionDetails: Lint.Utils.dedent`Any usage of express.csrf() middleware before
+            express.methodOverride() will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-no-csrf-before-method-override`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

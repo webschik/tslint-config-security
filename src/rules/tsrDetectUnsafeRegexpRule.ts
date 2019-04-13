@@ -5,6 +5,18 @@ import * as ts from 'typescript';
 import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-unsafe-regexp',
+        description: 'Warns when potential unsafe regular expression is found',
+        descriptionDetails: Lint.Utils.dedent`Any usage of potential unsafe regular expression will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-unsafe-regexp`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

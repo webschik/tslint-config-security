@@ -2,6 +2,18 @@ import * as Lint from 'tslint';
 import * as ts from 'typescript';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-pseudo-random-bytes',
+        description: 'Warns when crypto.pseudoRandomBytes() function is used',
+        descriptionDetails: Lint.Utils.dedent`Any usage of crypto.pseudoRandomBytes() will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-pseudo-random-bytes`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

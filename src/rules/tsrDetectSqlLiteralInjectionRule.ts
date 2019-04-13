@@ -6,6 +6,19 @@ import {stringLiteralKinds} from '../node-kind';
 const generalErrorMessage: string = 'Found possible SQL injection';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-sql-literal-injection',
+        description: 'Warns when possible SQL injection is found',
+        descriptionDetails: Lint.Utils.dedent`Any usage of the unsafe string concatenation in SQL queries
+            will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-sql-literal-injection`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

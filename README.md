@@ -80,7 +80,7 @@ Examples: [test/rules/tsr-disable-mustache-escape/default/test.ts.lint](test/rul
 
 #### `tsr-detect-eval-with-expression`
 
-Detects `eval(variable)` which can allow an attacker to run arbitary code inside your process.
+Detects `eval(variable)` which can allow an attacker to run arbitrary code inside your process.
 
 More information: http://security.stackexchange.com/questions/94017/what-are-the-security-issues-with-eval-in-javascript
 

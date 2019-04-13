@@ -4,6 +4,19 @@ import {stringLiteralKinds} from '../node-kind';
 import syntaxKindToName from '../syntax-kind-to-name';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-eval-with-expression',
+        description: 'Warns when eval() with non-literal argument is used',
+        descriptionDetails: Lint.Utils.dedent`Any usage of eval()
+            with non-literal argument will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-eval-with-expression`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

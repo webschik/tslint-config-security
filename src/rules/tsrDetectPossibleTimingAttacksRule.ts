@@ -76,6 +76,19 @@ function isVulnerablePropertyAccessExpression(node: ts.PropertyAccessExpression)
 }
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-possible-timing-attacks',
+        description: 'Warns when possible timing attack is found',
+        descriptionDetails: Lint.Utils.dedent`Any usage of unsafe comparisons ('==', '!=', '!==' and '===')
+            that check input sequentially will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-possible-timing-attacks`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

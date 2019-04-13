@@ -4,6 +4,19 @@ import fsModuleMethodsArgumentsInfo from '../fs-module-methods-arguments-info';
 import {stringLiteralKinds} from '../node-kind';
 
 export class Rule extends Lint.Rules.AbstractRule {
+    static metadata: Lint.IRuleMetadata = {
+        ruleName: 'tsr-detect-non-literal-fs-filename',
+        description: 'Warns when methods of Node.js FileSystem API are used with non-literal argument as a filename',
+        descriptionDetails: Lint.Utils.dedent`Any usage of Node.js FileSystem methods
+            with non-literal argument as a filename will trigger a warning.
+            See https://github.com/webschik/tslint-config-security#tsr-detect-non-literal-fs-filename`,
+        optionsDescription: '',
+        options: null,
+        type: 'functionality',
+        requiresTypeInfo: false,
+        typescriptOnly: false
+    };
+
     apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
         return this.applyWithFunction(sourceFile, walk);
     }

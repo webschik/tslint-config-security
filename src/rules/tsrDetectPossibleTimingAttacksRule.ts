@@ -41,7 +41,10 @@ function containsKeywordIdentifier(node: ts.Identifier) {
 }
 
 function containsKeywordPropertyAccessExpression(node: ts.PropertyAccessExpression) {
-    return containsKeyword(node.expression) || containsKeyword(node.name);
+    return (
+        containsKeyword(node.expression) ||
+        (node.name.kind !== ts.SyntaxKind.PrivateIdentifier && containsKeyword(node.name))
+    );
 }
 
 function isVulnerableType(node: ts.Expression): boolean {
@@ -72,7 +75,10 @@ function isVulnerableElementAccessExpression(node: ts.ElementAccessExpression) {
 }
 
 function isVulnerablePropertyAccessExpression(node: ts.PropertyAccessExpression) {
-    return isVulnerableType(node.expression) || isVulnerableType(node.name);
+    return (
+        isVulnerableType(node.expression) ||
+        (node.name.kind !== ts.SyntaxKind.PrivateIdentifier && isVulnerableType(node.name))
+    );
 }
 
 export class Rule extends Lint.Rules.AbstractRule {

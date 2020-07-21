@@ -44,7 +44,7 @@
   "peerDependencies": {
     "tslint": "^6.0.0",
     "tslib": "^2.0.0",
-    "typescript": "^2.9.1 || ^3.0.1"
+    "typescript": "^3.8.2"
   },
   "dependencies": {
     "safe-regex": "^1.1.0"

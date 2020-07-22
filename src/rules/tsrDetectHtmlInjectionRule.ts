@@ -50,7 +50,8 @@ function walk(ctx: Lint.WalkContext<void>) {
             }
             case ts.SyntaxKind.BinaryExpression: {
                 const {left, right, operatorToken} = node as ts.BinaryExpression;
-                const leftName: ts.Identifier | undefined = left && (left as ts.PropertyAccessExpression).name;
+                const leftName: ts.Identifier | ts.PrivateIdentifier | undefined =
+                    left && (left as ts.PropertyAccessExpression).name;
 
                 if (
                     operatorToken &&
